@@ -4,24 +4,24 @@ on:
   workflow_call:
     inputs:
       issue-number:
-        description: Issue number in the stories repo
+        description: 'Issue number in the stories repo'
         required: true
         type: string
       issue-title:
-        description: Issue title; must start with the story id, e.g. "DEMO-1: ..."
+        description: 'Issue title, which must start with the story id such as DEMO-1'
         required: true
         type: string
       agents-repo:
-        description: This repo as owner/name, so the job can check out the prompt and script
+        description: 'This repo as owner/name, so the job can check out the prompt and script'
         required: true
         type: string
       agents-ref:
-        description: Branch or tag of the agents repo to use
+        description: 'Branch or tag of the agents repo to use'
         required: false
         type: string
         default: main
       model:
-        description: GitHub Models id (list them at https://models.github.ai/catalog/models)
+        description: 'GitHub Models id, list them at https://models.github.ai/catalog/models'
         required: false
         type: string
         default: openai/gpt-4o-mini
@@ -114,18 +114,3 @@ jobs:
           PR_URL: ${{ steps.pr.outputs.pr_url }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh label create "state:spec-drafted" --color 0E8A16 2>/dev/null || true
-          gh issue edit "$ISSUE" \
-            --remove-label "state:ready-for-spec" \
-            --add-label "state:spec-drafted"
-          gh issue comment "$ISSUE" --body "Spec agent finished. Draft: ${PR_URL}  (run: ${RUN_URL})"
-
-      - name: Report failure on the issue
-        if: failure()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          ISSUE: ${{ inputs.issue-number }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          gh issue comment "$ISSUE" --body "Spec agent failed. See the run log: ${RUN_URL}. Fix the problem, then remove and re-add the label state:ready-for-spec to retry." || true
