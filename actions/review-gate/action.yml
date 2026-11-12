@@ -1,0 +1,48 @@
+name: Story review gate
+description: Process the PM's pull request review (approve or request changes) for a story specification
+
+inputs:
+  repo:
+    required: true
+    description: owner/name of the story repo
+  event-path:
+    required: true
+    description: Path to the webhook event payload (github.event_path)
+  github-token:
+    required: true
+    description: Token with contents, issues, pull-requests and actions write
+  pm-username:
+    required: true
+    description: The only user whose reviews count
+  max-revisions:
+    required: false
+    default: "5"
+    description: Maximum number of revision rounds
+  project-token:
+    required: false
+    default: ""
+    description: Token with Projects write
+  project-owner:
+    required: false
+    default: ""
+    description: Project owner
+  project-number:
+    required: false
+    default: ""
+    description: Project number
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        REPO: ${{ inputs.repo }}
+        EVENT_PATH: ${{ inputs.event-path }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        PM_USERNAME: ${{ inputs.pm-username }}
+        MAX_REVISIONS: ${{ inputs.max-revisions }}
+        PROJECT_TOKEN: ${{ inputs.project-token }}
+        PROJECT_OWNER: ${{ inputs.project-owner }}
+        PROJECT_NUMBER: ${{ inputs.project-number }}
+      run: |
+        STATE_SCRIPT="$GITHUB_ACTION_PATH/../story-state/set-state.sh" bash "$GITHUB_ACTION_PATH/review.sh"

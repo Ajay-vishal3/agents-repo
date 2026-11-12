@@ -1,0 +1,57 @@
+name: Story intake
+description: Validate a pushed clarification file, create or update the story issue and PR, and start the spec stage
+
+inputs:
+  repo:
+    required: true
+    description: owner/name of the story repo
+  branch:
+    required: true
+    description: Pushed branch, story/<ID>
+  sha:
+    required: true
+    description: Pushed commit
+  before:
+    required: false
+    default: ""
+    description: Previous tip of the branch
+  default-branch:
+    required: true
+    description: Default branch of the story repo
+  github-token:
+    required: true
+    description: Token with issues, pull-requests and actions write
+  pm-username:
+    required: false
+    default: ""
+    description: PM GitHub username
+  project-token:
+    required: false
+    default: ""
+    description: Token with Projects write
+  project-owner:
+    required: false
+    default: ""
+    description: Project owner
+  project-number:
+    required: false
+    default: ""
+    description: Project number
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        REPO: ${{ inputs.repo }}
+        BRANCH: ${{ inputs.branch }}
+        SHA: ${{ inputs.sha }}
+        BEFORE: ${{ inputs.before }}
+        DEFAULT_BRANCH: ${{ inputs.default-branch }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        PM_USERNAME: ${{ inputs.pm-username }}
+        PROJECT_TOKEN: ${{ inputs.project-token }}
+        PROJECT_OWNER: ${{ inputs.project-owner }}
+        PROJECT_NUMBER: ${{ inputs.project-number }}
+      run: |
+        STATE_SCRIPT="$GITHUB_ACTION_PATH/../story-state/set-state.sh" bash "$GITHUB_ACTION_PATH/intake.sh"

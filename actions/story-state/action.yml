@@ -1,0 +1,42 @@
+name: Story state
+description: Move a story issue to a pipeline state (state label plus Project Status)
+
+inputs:
+  repo:
+    description: owner/name of the story repo
+    required: true
+  issue:
+    description: Issue number
+    required: true
+  state:
+    description: needs-fixes | ready | drafting | in-review | approved | error
+    required: true
+  github-token:
+    description: Token with issues write
+    required: true
+  project-token:
+    description: Token with Projects write (classic PAT with project scope, or an App token)
+    required: false
+    default: ""
+  project-owner:
+    description: User or org that owns the Project
+    required: false
+    default: ""
+  project-number:
+    description: Project number
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        REPO: ${{ inputs.repo }}
+        ISSUE: ${{ inputs.issue }}
+        STATE: ${{ inputs.state }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        PROJECT_TOKEN: ${{ inputs.project-token }}
+        PROJECT_OWNER: ${{ inputs.project-owner }}
+        PROJECT_NUMBER: ${{ inputs.project-number }}
+      run: bash "$GITHUB_ACTION_PATH/set-state.sh"
