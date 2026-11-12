@@ -28,8 +28,10 @@ on:
         default: ""
 permissions:
   contents: read
-  copilot-requests: write
-engine: copilot
+engine:
+  id: copilot
+  model: claude-sonnet-5.5
+  fallback-models: [gpt-4.1, gpt-4o, claude-haiku-4.5, gpt-5.6-terra]
 inlined-imports: true
 timeout-minutes: 20
 tools:
