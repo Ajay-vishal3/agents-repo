@@ -30,6 +30,7 @@ permissions:
   contents: read
   copilot-requests: write
 engine: copilot
+inlined-imports: true
 timeout-minutes: 20
 tools:
   bash: ["cat", "wc", "ls"]
