@@ -2,7 +2,7 @@
 name: Spec Agent
 description: Drafts stories/<ID>/specification.md from the story's clarification file, or revises it from PM feedback
 on:
-  roles:all
+  roles: all
   workflow_call:
     inputs:
       story_id:
